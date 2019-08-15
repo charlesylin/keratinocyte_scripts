@@ -116,16 +116,21 @@ for folder in folderList:
 #some data tables overlap for ease of analysis
 
 #ATAC-Seq
-atac_dataFile = '%sdata_tables/NIBR_CHIP_TABLE.txt' % (projectFolder)
+atac_dataFile = '%sdata_tables/NIBR_ATAC_TABLE_NEW_riesling.txt' % (projectFolder)
 
 #ChIP-Seq
-chip_dataFile = '%sdata_tables/NIBR_ATAC_TABLE.txt' % (projectFolder)
+chip_dataFile = '%sdata_tables/NIBR_CHIP_TABLE.txt' % (projectFolder)
 
 #RNA-Seq
 rna_dataFile = '%sdata_tables/NIBR_RNA_TABLE.txt' % (projectFolder)
 
+#IRF2 ChIPmentation
+irf2_dataFile = '%sdata_tables/NIBR_IRF2_CHIP_TABLE.txt' % (projectFolder)
 
 
+#all data files
+
+data_file_list = [atac_dataFile,chip_dataFile,irf2_dataFile,rna_dataFile]
 #==========================================================================
 #===========================MAIN METHOD====================================
 #==========================================================================
@@ -173,9 +178,9 @@ def main():
     #if no processed expression present, runs cuffquant/cuffnorm/RNA-seq pipeline
     cufflinksFolder = utils.formatFolder('%scufflinks' % (projectFolder),True)
     analysis_name = 'NIBR_YvsO'
-    groupList = [['Y_BC10_Y1','Y_BC11_Y2','Y_BC16_Y3'],['O_BC18_O1','O_BC25_O2','O_BC27_O3']]
-    bashFileName = '%s%s_rna_cufflinks.sh' % (cufflinksFolder,analysis_name)
-    pipeline_dfci.makeCuffTable(rna_dataFile,analysis_name,gtfFile,cufflinksFolder,groupList,bashFileName)
+    #groupList = [['Y_BC10_Y1','Y_BC11_Y2','Y_BC16_Y3'],['O_BC18_O1','O_BC25_O2','O_BC27_O3']]
+    #bashFileName = '%s%s_rna_cufflinks.sh' % (cufflinksFolder,analysis_name)
+    #pipeline_dfci.makeCuffTable(rna_dataFile,analysis_name,gtfFile,cufflinksFolder,groupList,bashFileName)
 
 
     print('\n\n')
@@ -191,6 +196,81 @@ def main():
 
 
     pipeline_dfci.summary(atac_dataFile)
+
+
+    print('\n\n')
+    print('#======================================================================')
+    print('#====================IV. CHECKING IRF2 CHIPMENTATION===================')
+    print('#======================================================================')
+    print('\n\n')
+    
+    pipeline_dfci.summary(irf2_dataFile)
+
+
+    print('\n\n')
+    print('#======================================================================')
+    print('#====================V. SUMMARIZING ALL DATA===========================')
+    print('#======================================================================')
+    print('\n\n')
+
+    output = '%stables/HG19_HPEK_SEQ_TABLE.txt' % (projectFolder)
+    make_summary_table(data_file_list,output)
+
+#==========================================================================
+#=========================SCRIPT FUNCTIONS=================================
+#==========================================================================
+
+#summarize the data
+
+def make_summary_table(data_file_list,output,bed_path = ''):
+    '''
+    exports a table w/ name, million mapped reads and number of peaks
+    '''
+
+    print('WRITING SUMMARY OUTPUT TO %s' % (output))
+    
+
+
+
+    if bed_path != '':
+        print('COPYING BEDS TO %s' % (bed_path))
+
+
+
+    summary_table = [['NAME','READ_LENGTH','MAPPED_READS','PEAKS']]
+
+    for data_file in data_file_list:
+        print('GETTING DATA SUMMARY FOR %s' % (data_file))
+        dataDict=pipeline_dfci.loadDataTable(data_file)
+
+        names_list = dataDict.keys()
+        names_list.sort()
+        for name in names_list:
+            print(name)
+            uniqueID = dataDict[name]['uniqueID']
+
+            bam = utils.Bam(dataDict[name]['bam'])
+            read_length = bam.getReadLengths()[0]
+            mmr = round(float(bam.getTotalReads())/1000000,2)
+
+            #get the peak count
+            try:
+                peak_path = '%s%s' % (macsEnrichedFolder,dataDict[name]['enrichedMacs'])
+                peakCollection = utils.importBoundRegion(peak_path,name)
+                peakCount = len(peakCollection)
+            except IOError:
+                peakCount = 'NA'
+
+
+            newLine = [name,read_length,mmr,peakCount]
+            #print(newLine)
+            summary_table.append(newLine)
+
+
+
+    utils.unParseTable(summary_table,output,'\t')    
+
+
 
 
 

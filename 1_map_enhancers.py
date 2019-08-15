@@ -114,7 +114,7 @@ py27_path = '/storage/cylin/anaconda3/envs/py27_anaconda/bin/python'
 #some data tables overlap for ease of analysis
 
 #ATAC-Seq
-atac_dataFile = '%sdata_tables/NIBR_ATAC_TABLE.txt' % (projectFolder)
+atac_dataFile = '%sdata_tables/NIBR_ATAC_TABLE_NEW_riesling.txt' % (projectFolder)
 
 #ChIP-Seq
 chip_dataFile = '%sdata_tables/NIBR_CHIP_TABLE.txt' % (projectFolder)
@@ -513,33 +513,38 @@ def main():
                     ['chr4','ZFP42','ZFP42',188914912,188946979,'','+','','ZFP42'],
                     ['chrX','SAT1','SAT1',23794388,23827662,'','+','','SAT1'],
                     ['chr6','MAPK13','MAPK13',36096634,36101634,'','+','MAPK13'],
+                    ['chr6','PSMB9','PSMB9',32800513,32831638,'','+','','PSMB9'],
+                    ['chr6','TAP1','TAP1',32816769,32826769,'','+','','TAP1'],
+                    ['chr11','TRIM44','TRIM44',35676627,35849111,'','+','','TRIM44'],
+                    ['chr15','B2M','B2M',44996447,45012562,'','+','','B2M'],
+
                 ]
     figure_gff_path = '%sHG19_KERATINOCYTE_FIGURE_2_GENES.gff' % (gffFolder)
     utils.unParseTable(figure_2_gff,figure_gff_path,'\t')
 
 
-    # bed_list = ['%scrc_atac/keratinocyte_combined_all/motif_beds/IRF2_motifs.bed' % (projectFolder),
-    #             '%scrc_atac/keratinocyte_combined_all/motif_beds/SNAI2_motifs.bed' % (projectFolder),
-    #             '%scrc_atac/keratinocyte_combined_all/keratinocyte_combined_all_all_subpeak.bed' % (projectFolder),
-    #             ]
+    bed_list = ['%scrc_atac/keratinocyte_combined_all/motif_beds/IRF2_motifs.bed' % (projectFolder),
+                '%scrc_atac/keratinocyte_combined_all/motif_beds/SNAI2_motifs.bed' % (projectFolder),
+                '%scrc_atac/keratinocyte_combined_all/keratinocyte_combined_all_all_subpeak.bed' % (projectFolder),
+                ]
     
-    # bed_string = ','.join(bed_list)
-    # plot_prefix = 'HG19_KERATINOCYTE_FIGURE_2_GENES'
-    # plot_keratinocyte_genes(plot_prefix,chip_dataFile,figure_gff_path,bed_string)    
+    bed_string = ','.join(bed_list)
+    plot_prefix = 'HG19_KERATINOCYTE_FIGURE_2_GENES'
+    plot_keratinocyte_genes(plot_prefix,chip_dataFile,figure_gff_path,bed_string)    
 
 
     #plotting additional genes atac
 
-    # bed_list = ['%scrc_atac/keratinocyte_combined_all/motif_beds/IRF2_motifs.bed' % (projectFolder),
-    #             '%scrc_atac/keratinocyte_combined_all/motif_beds/SNAI2_motifs.bed' % (projectFolder),
-    #             '%scrc_atac/keratinocyte_combined_all/keratinocyte_combined_all_all_subpeak.bed' % (projectFolder),
-    #             ]
+    bed_list = ['%scrc_atac/keratinocyte_combined_all/motif_beds/IRF2_motifs.bed' % (projectFolder),
+                '%scrc_atac/keratinocyte_combined_all/motif_beds/SNAI2_motifs.bed' % (projectFolder),
+                '%scrc_atac/keratinocyte_combined_all/keratinocyte_combined_all_all_subpeak.bed' % (projectFolder),
+                ]
     
-    # bed_string = ','.join(bed_list)
+    bed_string = ','.join(bed_list)
 
-    # atac_dataFile_riesling = '%sdata_tables/NIBR_ATAC_TABLE_NEW_riesling.txt' % (projectFolder)
-    # plot_prefix = 'HG19_KERATINOCYTE_FIGURE_2_GENES_ATAC'
-    # plot_keratinocyte_atac(plot_prefix,atac_dataFile_riesling,figure_gff_path,bed_string)  
+    atac_dataFile_riesling = '%sdata_tables/NIBR_ATAC_TABLE_NEW_riesling.txt' % (projectFolder)
+    plot_prefix = 'HG19_KERATINOCYTE_FIGURE_2_GENES_ATAC'
+    plot_keratinocyte_atac(plot_prefix,atac_dataFile_riesling,figure_gff_path,bed_string)  
     
 
 
@@ -616,40 +621,40 @@ def main():
     print('#======================================================================')
     print('\n\n')
 
-    #create a delta waterfall of the enhancer promoter output between young and old
-    #takes a pair of enhancer promoter gene tables and calls a simple R script to make a waterfall
+    # #create a delta waterfall of the enhancer promoter output between young and old
+    # #takes a pair of enhancer promoter gene tables and calls a simple R script to make a waterfall
 
-    #correlates to changes in expression
-    exp_path = '%scufflinks/NIBR_YvsO_cuffnorm/genes.fpkm_table' % (projectFolder)
+    # #correlates to changes in expression
+    # exp_path = '%scufflinks/NIBR_YvsO_cuffnorm/genes.fpkm_table' % (projectFolder)
 
-    name_1 = 'keratinocyte_combined_all_old'
-    ep_gene_path_1 = '%senhancerPromoter/%s/%s_GENE_TABLE.txt' % (projectFolder,name_1,name_1)
+    # name_1 = 'keratinocyte_combined_all_old'
+    # ep_gene_path_1 = '%senhancerPromoter/%s/%s_GENE_TABLE.txt' % (projectFolder,name_1,name_1)
 
-    name_2 = 'keratinocyte_combined_all_young'
-    ep_gene_path_2 = '%senhancerPromoter/%s/%s_GENE_TABLE.txt' % (projectFolder,name_2,name_2)
+    # name_2 = 'keratinocyte_combined_all_young'
+    # ep_gene_path_2 = '%senhancerPromoter/%s/%s_GENE_TABLE.txt' % (projectFolder,name_2,name_2)
 
-    h3k27ac_name_1 = 'keratinocyte_combined_all_old_h3k27ac'
-    h3k27ac_ep_gene_path_1 = '%senhancerPromoter/%s/%s_GENE_TABLE.txt' % (projectFolder,h3k27ac_name_1,h3k27ac_name_1)
+    # h3k27ac_name_1 = 'keratinocyte_combined_all_old_h3k27ac'
+    # h3k27ac_ep_gene_path_1 = '%senhancerPromoter/%s/%s_GENE_TABLE.txt' % (projectFolder,h3k27ac_name_1,h3k27ac_name_1)
 
-    h3k27ac_name_2 = 'keratinocyte_combined_all_young_h3k27ac'
-    h3k27ac_ep_gene_path_2 = '%senhancerPromoter/%s/%s_GENE_TABLE.txt' % (projectFolder,h3k27ac_name_2,h3k27ac_name_2)
+    # h3k27ac_name_2 = 'keratinocyte_combined_all_young_h3k27ac'
+    # h3k27ac_ep_gene_path_2 = '%senhancerPromoter/%s/%s_GENE_TABLE.txt' % (projectFolder,h3k27ac_name_2,h3k27ac_name_2)
 
-    output_path = '%sfigures/%s_%s_enhancer_promoter_gene_delta.pdf' % (projectFolder,name_1,name_2)
+    # output_path = '%sfigures/%s_%s_enhancer_promoter_gene_delta.pdf' % (projectFolder,name_1,name_2)
 
-    waterfall_script_path = '%sr_scripts/enhancer_promoter_waterfall.R' % (projectFolder)
+    # waterfall_script_path = '%sr_scripts/enhancer_promoter_waterfall.R' % (projectFolder)
     
-    waterfall_bash_script = '%sr_scripts/enhancer_promoter_waterfall_run.sh' % (projectFolder)
-    waterfall_bash = open(waterfall_bash_script,'w')
+    # waterfall_bash_script = '%sr_scripts/enhancer_promoter_waterfall_run.sh' % (projectFolder)
+    # waterfall_bash = open(waterfall_bash_script,'w')
     
-    waterfall_bash.write('#!/usr/bin/bash\n\n')
+    # waterfall_bash.write('#!/usr/bin/bash\n\n')
     
     
-    r_cmd = 'Rscript %s %s %s %s %s %s %s %s %s' % (waterfall_script_path,name_1,name_2,ep_gene_path_1,ep_gene_path_2,h3k27ac_ep_gene_path_1,h3k27ac_ep_gene_path_2,exp_path,output_path)
+    # r_cmd = 'Rscript %s %s %s %s %s %s %s %s %s' % (waterfall_script_path,name_1,name_2,ep_gene_path_1,ep_gene_path_2,h3k27ac_ep_gene_path_1,h3k27ac_ep_gene_path_2,exp_path,output_path)
 
-    waterfall_bash.write(r_cmd)
-    waterfall_bash.close()
-    print(r_cmd)
-    #os.system(r_cmd)
+    # waterfall_bash.write(r_cmd)
+    # waterfall_bash.close()
+    # print(r_cmd)
+    # #os.system(r_cmd)
 
 
 
